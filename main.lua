@@ -1,8 +1,13 @@
+-- Minimap v1.0.0
+-- SmoothSpatula
+
 log.info("Successfully loaded ".._ENV["!guid"]..".")
 mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.hfuncs then Helper = v end end end)
 mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.tomlfuncs then Toml = v end end 
     params = {
         toggle_map = "M",
+        toggle_interactables = false,
+        toggle_teleporter = false,
         zoom_scale = 0.6,
         minimap_enabled = true
     }
@@ -36,6 +41,22 @@ gui.add_to_menu_bar(function()
     end
 end)
 
+gui.add_to_menu_bar(function()
+    local new_value, clicked = ImGui.Checkbox("Show Interactables", params['toggle_interactables'])
+    if isChanged then
+        params['toggle_interactables'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
+    end
+end)
+
+gui.add_to_menu_bar(function()
+    local new_value, clicked = ImGui.Checkbox("Show Teleporter", params['toggle_teleporter'])
+    if isChanged then
+        params['toggle_teleporter'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
+    end
+end)
+
 local toggle_show_map = false
 gui.add_always_draw_imgui(function()
     if ImGui.IsKeyPressed(ImGuiKey[params['toggle_map']]) then
@@ -59,9 +80,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
         local surf_width = params['zoom_scale'] * gm.camera_get_view_width(cam)
         local surf_height = surf_width / ratio
 
-        print(gm._mod_room_get_current_height())
         if gm._mod_room_get_current_width() < gm._mod_room_get_current_height() then
-            print("HELLO")
             surf_height = params['zoom_scale'] * gm.camera_get_view_height(cam)
             surf_width = surf_height * ratio
         end
@@ -86,6 +105,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
                 local y = yoffset + inst.y * yscale
                 local width = inst.width_box * xscale * 32
                 local height = inst.height_box * yscale * 32
+
                 gm.draw_rectangle(x, y, x+width, y+height, false)
             end
         end
@@ -97,6 +117,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
                 local y = yoffset + inst.y * yscale
                 local width = inst.width_box * xscale * 32
                 local height = inst.height_box * yscale * 32
+
                 gm.draw_rectangle(x, y, x+width, y+height, false)
             end
         end
@@ -108,6 +129,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
                 local y = yoffset + inst.y * yscale
                 local width = inst.width_box * xscale * 32
                 local height = inst.height_box * yscale * 32
+
                 gm.draw_rectangle(x, y,x+width, y+height, false)
             end
         end
@@ -119,6 +141,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
                 local y = yoffset + inst.y * yscale
                 local width = inst.width_box * xscale * 32
                 local height = inst.height_box * yscale * 32
+
                 gm.draw_rectangle(x, y, x+width, y+height, false)
             end
         end
@@ -130,6 +153,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
                 local y = yoffset + inst.y * yscale
                 local width = inst.width_box * xscale * 32
                 local height = inst.height_box * yscale * 32
+
                 gm.draw_rectangle(x, y, x+width, y+height, false)
             end
         end
@@ -141,6 +165,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
                 local y = yoffset + inst.y * yscale
                 local width = inst.width_box * xscale * 32
                 local height = inst.height_box * yscale * 32
+
                 gm.draw_rectangle(x, y, x+width, y+height, false)
             end
         end
@@ -152,6 +177,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
                 local y = yoffset + inst.y * yscale
                 local width = inst.width_box * xscale * 32
                 local height = inst.height_box * yscale * 32
+
                 gm.draw_rectangle(x, y, x+width, y+height, false)
             end
         end
@@ -164,6 +190,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
                 local y = yoffset + inst.y * yscale
                 local rope_xscale = gm.sprite_get_width(inst.sprite_index) * xscale / 2
                 local height = inst.height_box * yscale * 32
+
                 gm.draw_rectangle_colour(x-rope_xscale, y, x+rope_xscale, y+height, 4235519, 4235519, 4235519, 4235519, false)
             end
         end
@@ -176,13 +203,14 @@ gm.post_code_execute(function(self, other, code, result, flags)
                 local y = yoffset + inst.y * yscale
                 local geyser_xscale = gm.sprite_get_width(inst.sprite_index) * xscale / 4
                 local geyser_yscale = gm.sprite_get_height(inst.sprite_index) * yscale
+
                 gm.draw_rectangle_colour(x-geyser_xscale, y-geyser_yscale, x+geyser_xscale, y, 16776960, 16776960, 16776960, 16776960, false)
             end
         end
         
         -- Display all interactables
         local pInteractable = Helper.find_active_instance_all(gm.constants.pInteractable)
-        if pInteractable then 
+        if pInteractable and params['toggle_teleporter'] then 
             for _, inst in ipairs(pInteractable) do
                 local x = xoffset + inst.x * xscale
                 local y = yoffset + inst.y * yscale
@@ -195,7 +223,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
         
         -- Display the teleporter
         local tp = Helper.get_teleporter()
-        if tp then 
+        if tp and params['toggle_teleporter'] then 
                 local x = xoffset + tp.x * xscale
                 local y = yoffset + tp.y * yscale
                 local tp_xscale = gm.sprite_get_width(tp.sprite_index) * xscale / 2
@@ -211,7 +239,6 @@ gm.post_code_execute(function(self, other, code, result, flags)
         local player_yscale = gm.sprite_get_height(player.sprite_index) * yscale * 2
 
         gm.draw_rectangle_colour(player_x-player_xscale, player_y-player_yscale, player_x+player_xscale, player_y, 65280, 65280, 65280, 65280, false)
-
 
         gm.surface_reset_target()
         gm.draw_surface(surf, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
