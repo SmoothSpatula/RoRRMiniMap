@@ -1,4 +1,4 @@
-# RoRRMiniMap
+# MiniMap
 Adds a minimap. 
 
 ---
