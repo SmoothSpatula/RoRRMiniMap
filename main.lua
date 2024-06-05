@@ -43,7 +43,7 @@ end)
 
 gui.add_to_menu_bar(function()
     local new_value, clicked = ImGui.Checkbox("Show Interactables", params['toggle_interactables'])
-    if isChanged then
+    if clicked then
         params['toggle_interactables'] = new_value
         Toml.save_cfg(_ENV["!guid"], params)
     end
@@ -51,7 +51,7 @@ end)
 
 gui.add_to_menu_bar(function()
     local new_value, clicked = ImGui.Checkbox("Show Teleporter", params['toggle_teleporter'])
-    if isChanged then
+    if clicked then
         params['toggle_teleporter'] = new_value
         Toml.save_cfg(_ENV["!guid"], params)
     end
@@ -210,7 +210,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
         
         -- Display all interactables
         local pInteractable = Helper.find_active_instance_all(gm.constants.pInteractable)
-        if pInteractable and params['toggle_teleporter'] then 
+        if pInteractable and params['toggle_interactables'] then 
             for _, inst in ipairs(pInteractable) do
                 local x = xoffset + inst.x * xscale
                 local y = yoffset + inst.y * yscale
