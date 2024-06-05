@@ -1,10 +1,10 @@
 {
-	"name": "RORRMiniMap",
+	"name": "MiniMap",
 	"version_number": "1.0.0",
-	"website_url": "https://github.com/SmoothSpatula/SmoothSpatula-RoRRMiniMap",
+	"website_url": "https://github.com/SmoothSpatula/SmoothSpatula-MiniMap",
 	"description": "Adds a minimap. Press M to toggle it.",
 	"dependencies": [
-		"ReturnOfModding-ReturnOfModding-1.0.20",
+		"ReturnOfModding-ReturnOfModding-1.0.29",
 		"Klehrik-HelperFunctions-1.0.5",
 		"SmoothSpatula-TomlHelper-1.0.1"
 	]
