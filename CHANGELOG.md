@@ -1,7 +1,8 @@
 ### v1.0.0
 * Initial release
 
-
+### v1.0.1
+* Fixed surface error crashing the game
 
 ### v1.0.2
 * The map is now generated only once on entering a stage, for greater performance.
