@@ -12,10 +12,11 @@ Adds a minimap.
 
 ## Usage
 * Open the ImGUI window display (default key is `Insert`)
-* Choose the position and scale in the Mod menu.
+* [List of possible keys for the toggle](https://oprypin.github.io/crystal-imgui/ImGui/ImGuiKey.html)
 
 ## Special Thanks To
 * The Return Of Modding team
+* The return of Modding Discord for the feedback
 
 ## Contact
 For questions or bug reports, you can find us in the [RoRR Modding Server](https://discord.gg/VjS57cszMq) @Miguelito @Umigatari
