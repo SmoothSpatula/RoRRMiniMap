@@ -16,7 +16,7 @@ Adds a minimap.
 
 ## Special Thanks To
 * The Return Of Modding team
-* The return of Modding Discord for the feedback
+* The Return of Modding Discord for the feedback
 
 ## Contact
 For questions or bug reports, you can find us in the [RoRR Modding Server](https://discord.gg/VjS57cszMq) @Miguelito @Umigatari
