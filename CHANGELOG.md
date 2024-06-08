@@ -9,3 +9,6 @@
 * You can now change the map's alpha
 * Fixed an issue where the map would toggle when typing in chat
 * ImGui will now prevent you from entering a non-valid key for toggling the map
+
+### v1.0.3
+* Tried to solve an issue where surfaces weren't being freed correctly
