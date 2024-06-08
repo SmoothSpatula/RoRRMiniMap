@@ -1,4 +1,4 @@
--- Minimap v1.0.2
+-- Minimap v1.0.0
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
@@ -254,8 +254,10 @@ local function draw_player(cam, player, xscale, yscale, xoffset, yoffset)
     local player_yscale = gm.sprite_get_height(player.sprite_index) * yscale * 2
 
     gm.draw_rectangle_colour(player_x-player_xscale, player_y-player_yscale, player_x+player_xscale, player_y, 65280, 65280, 65280, 65280, false)
-
     gm.surface_reset_target()
+
+    gm.draw_surface(surf_player, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
+    gm.surface_free(surf_player) --do this or run out of memory
 end
 
 -- ========== Main ==========
@@ -287,15 +289,16 @@ gm.post_code_execute(function(self, other, code, result, flags)
 
         gm.draw_set_alpha(params['foreground_alpha'])
 
-        if gm.surface_exists(surf_map) == 0.0 or redraw then 
+        if gm.surface_exists(surf_map) == 0.0 or redraw then
+            if gm.surface_exists(surf_map) ~= 0.0 then
+                gm.surface_free(surf_map)
+            end
             draw_map(cam, xscale, yscale, xoffset, yoffset) 
             redraw = false
         end
 
-        draw_player(cam, player, xscale, yscale, xoffset, yoffset)
-
         gm.draw_surface(surf_map, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
-        gm.draw_surface(surf_player, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
+        draw_player(cam, player, xscale, yscale, xoffset, yoffset)
     end
 end)
 
