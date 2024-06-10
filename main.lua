@@ -5,7 +5,7 @@ log.info("Successfully loaded ".._ENV["!guid"]..".")
 mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.hfuncs then Helper = v end end end)
 mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.tomlfuncs then Toml = v end end 
     params = {
-        toggle_map_key = 558,
+        toggle_map_key = 77,
         toggle_interactables = false,
         toggle_teleporter = false,
         zoom_scale = 0.6,
