@@ -1,4 +1,4 @@
--- Minimap v1.0.3
+-- Minimap v1.0.4
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
@@ -24,6 +24,7 @@ local surf_player = -1
 local toggle_show_map = false
 local redraw = false
 local chat_open = false
+local multiplayer_colours = {255, 16711680, 65535, 65280}
 
 -- ========== ImGui ==========
 
@@ -242,20 +243,24 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     gm.surface_reset_target()
 end
 
-local function draw_player(cam, player, xscale, yscale, xoffset, yoffset)
+local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
     surf_player = gm.surface_create(gm.camera_get_view_width(cam), gm.camera_get_view_height(cam))
     gm.surface_set_target(surf_player)
     gm.draw_clear_alpha(0, 0)
 
-    -- Display the player
-    local player_x = xoffset + player.x * xscale
-    local player_y = yoffset + player.y * yscale
-    local player_xscale = gm.sprite_get_width(player.sprite_index) * xscale
-    local player_yscale = gm.sprite_get_height(player.sprite_index) * yscale * 2
+    -- Display the players
 
-    gm.draw_rectangle_colour(player_x-player_xscale, player_y-player_yscale, player_x+player_xscale, player_y, 65280, 65280, 65280, 65280, false)
+    for i, player in ipairs(players) do
+        local player_x = xoffset + player.x * xscale
+        local player_y = yoffset + player.y * yscale
+        local player_xscale = gm.sprite_get_width(player.sprite_index) * xscale
+        local player_yscale = gm.sprite_get_height(player.sprite_index) * yscale * 2
+        local player_colour = multiplayer_colours[player.player_p_number]
+
+        gm.draw_rectangle_colour(player_x-player_xscale, player_y-player_yscale, player_x+player_xscale, player_y, player_colour, player_colour, player_colour, player_colour, false)
+    end
+    
     gm.surface_reset_target()
-
     gm.draw_surface(surf_player, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
     gm.surface_free(surf_player) --do this or run out of memory
 end
@@ -267,8 +272,8 @@ gm.post_code_execute(function(self, other, code, result, flags)
 
     if code.name:match("oInit_Draw_7") then
         
-        local player = Helper.get_client_player()
-        
+        -- local player = Helper.get_client_player()
+        local player = Helper.find_active_instance_all(gm.constants.oP)
         if not player then return end
         
         local cam = gm.view_get_camera(0)
