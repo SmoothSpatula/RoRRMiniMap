@@ -5,7 +5,7 @@ log.info("Successfully loaded ".._ENV["!guid"]..".")
 mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.hfuncs then Helper = v end end end)
 mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.tomlfuncs then Toml = v end end 
     params = {
-        toggle_map = "M",
+        toggle_map = 558,
         toggle_interactables = false,
         toggle_teleporter = false,
         zoom_scale = 0.6,
@@ -64,9 +64,9 @@ gui.add_to_menu_bar(function()
 end)
 
 gui.add_to_menu_bar(function()
-    local new_value, isChanged = ImGui.InputText("Toggle Map Key", params['toggle_map'], 20)
-    if isChanged and ImGuiKey[new_value] then
-        params['toggle_map'] = new_value
+    local isChanged, keybind_value = ImGui.Hotkey("Toggle Map Key", params['toggle_map'])
+    if isChanged then
+        params['toggle_map'] = keybind_value
         Toml.save_cfg(_ENV["!guid"], params)
     end
 end)
@@ -90,7 +90,7 @@ gui.add_to_menu_bar(function()
 end)
 
 gui.add_always_draw_imgui(function()
-    if ImGui.IsKeyPressed(ImGuiKey[params['toggle_map']]) and not chat_open then
+    if ImGui.IsKeyPressed(params['toggle_map']) and not chat_open then
         toggle_show_map = not toggle_show_map
     end
 end)
