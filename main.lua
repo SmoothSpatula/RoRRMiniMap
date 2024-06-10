@@ -249,7 +249,6 @@ local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
     gm.draw_clear_alpha(0, 0)
 
     -- Display the players
-
     for i, player in ipairs(players) do
         local player_x = xoffset + player.x * xscale
         local player_y = yoffset + player.y * yscale
@@ -272,9 +271,8 @@ gm.post_code_execute(function(self, other, code, result, flags)
 
     if code.name:match("oInit_Draw_7") then
         
-        -- local player = Helper.get_client_player()
-        local player = Helper.find_active_instance_all(gm.constants.oP)
-        if not player then return end
+        local players = Helper.find_active_instance_all(gm.constants.oP)
+        if not players then return end
         
         local cam = gm.view_get_camera(0)
         local ratio = gm._mod_room_get_current_width() / gm._mod_room_get_current_height()
@@ -303,7 +301,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
         end
 
         gm.draw_surface(surf_map, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
-        draw_player(cam, player, xscale, yscale, xoffset, yoffset)
+        draw_player(cam, players, xscale, yscale, xoffset, yoffset)
         gm.draw_set_alpha(1)
     end
 end)
@@ -314,6 +312,7 @@ gm.pre_code_execute(function(self, other, code, result, flags)
     end
 end)
 
+-- Redraw the map for each new stage
 gm.post_script_hook(gm.constants.texture_flush_group, function(self, other, result, args)
     redraw = true
 end)
