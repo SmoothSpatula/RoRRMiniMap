@@ -12,3 +12,8 @@
 
 ### v1.0.3
 * Tried to solve an issue where surfaces weren't being freed correctly
+
+### v1.0.4
+* The map now displays all players with their respective colours
+* Updated way to change keybind
+* Fixed the map not working in Local Multiplayer
