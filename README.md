@@ -1,5 +1,5 @@
 # MiniMap
-Adds a minimap. 
+Adds a minimap. Press M to toggle it or change the keybind in the ImGui settings.
 
 ---
 
