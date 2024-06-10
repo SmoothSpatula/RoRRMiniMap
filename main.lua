@@ -304,6 +304,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
 
         gm.draw_surface(surf_map, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
         draw_player(cam, player, xscale, yscale, xoffset, yoffset)
+        gm.draw_set_alpha(1)
     end
 end)
 
