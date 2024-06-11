@@ -9,7 +9,7 @@ mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "tab
         toggle_interactables = false,
         toggle_teleporter = false,
         toggle_player_names = true,
-        zoom_scale = 0.7,
+        zoom_scale = 0.8,
         background_alpha = 0,
         foreground_alpha = 0.8,
         minimap_enabled = true
