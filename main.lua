@@ -318,16 +318,16 @@ gm.pre_code_execute(function(self, other, code, result, flags)
 end)
 
 -- Redraw the map for each new stage
-gm.post_script_hook(gm.constants.texture_flush_group, function(self, other, result, args)
+gm.post_script_hook(gm.constants.texture_flush_group, function()
     redraw = true
 end)
 
 -- Disable mod when run ends
-gm.pre_script_hook(gm.constants.run_destroy, function(self, other, result, args)
+gm.pre_script_hook(gm.constants.run_destroy, function()
     toggle_show_map = false
 end)
 
 -- Redraw the map when zoom scale changes, works with quickzoom mod
-gm.post_script_hook(gm.constants.prefs_set_zoom_scale, function(self, other, result, args)
+gm.post_script_hook(gm.constants.prefs_set_zoom_scale, function()
     redraw = true
 end)
