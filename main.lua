@@ -238,7 +238,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
         local tp_yscale = gm.sprite_get_height(tp.sprite_index) * yscale * 2
 
         gm.draw_rectangle_colour(x-tp_xscale, y-tp_yscale, x+tp_xscale-1, y-1, 8388736, 8388736, 8388736, 8388736, false)
-        gm.draw_text_colour(x-tp_xscale+5, y-tp_yscale-12, "TP", 16711935, 16711935, 16711935, 16711935, 1)
+        gm.draw_text_colour(x-tp_xscale+5, y-tp_yscale-12, "TP", 16711935, 16711935, 16711935, 16711935, params['foreground_alpha'])
     end
 
     gm.surface_reset_target()
@@ -258,7 +258,7 @@ local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
         local player_colour = multiplayer_colours[player.player_p_number]
 
         if player.user_name then
-            gm.draw_text_colour(player_x-player_xscale+10, player_y-player_yscale-13, player.user_name, player_colour, player_colour, player_colour, player_colour, 1)
+            gm.draw_text_colour(player_x-player_xscale+10, player_y-player_yscale-13, player.user_name, player_colour, player_colour, player_colour, player_colour, params['foreground_alpha'])
         end
 
         gm.draw_rectangle_colour(player_x-player_xscale, player_y-player_yscale, player_x+player_xscale, player_y, player_colour, player_colour, player_colour, player_colour, false)
