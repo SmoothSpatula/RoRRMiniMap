@@ -17,3 +17,6 @@
 * The map now displays all players with their respective colours
 * Updated way to change keybind
 * Fixed the map not working in Local Multiplayer
+
+### v1.0.5
+* The map now updates when changing zoom scale, works with QuickZoom mod
