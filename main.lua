@@ -283,7 +283,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
         local surf_width = params['zoom_scale'] * gm.camera_get_view_width(cam)
         local surf_height = surf_width / ratio
 
-        if gm._mod_room_get_current_width() < gm._mod_room_get_current_height() then
+        if ratio*gm.camera_get_view_height(cam) < gm.camera_get_view_width(cam) then
             surf_height = params['zoom_scale'] * gm.camera_get_view_height(cam)
             surf_width = surf_height * ratio
         end
