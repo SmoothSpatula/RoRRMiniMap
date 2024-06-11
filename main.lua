@@ -1,4 +1,4 @@
--- Minimap v1.0.4
+-- Minimap v1.0.5
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
@@ -320,4 +320,9 @@ end)
 -- Disable mod when run ends
 gm.pre_script_hook(gm.constants.run_destroy, function(self, other, result, args)
     toggle_show_map = false
+end)
+
+-- Redraw the map when zoom scale changes, works with quickzoom mod
+gm.post_script_hook(gm.constants.prefs_set_zoom_scale, function(self, other, result, args)
+    redraw = true
 end)
