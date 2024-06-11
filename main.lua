@@ -268,7 +268,7 @@ local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
         local player_colour = multiplayer_colours[player.player_p_number]
 
         if params['toggle_player_names'] and player.user_name then
-            gm.draw_text_colour(player_x-player_xscale+10, player_y-player_yscale-13, player.user_name, player_colour, player_colour, player_colour, player_colour, params['foreground_alpha'])
+            gm.draw_text_colour(player_x-player_xscale+5, player_y-player_yscale-13, player.user_name, player_colour, player_colour, player_colour, player_colour, params['foreground_alpha'])
         end
 
         gm.draw_rectangle_colour(player_x-player_xscale, player_y-player_yscale, player_x+player_xscale, player_y, player_colour, player_colour, player_colour, player_colour, false)
