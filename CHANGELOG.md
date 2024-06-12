@@ -20,3 +20,8 @@
 
 ### v1.0.5
 * The map now updates when changing zoom scale, works with QuickZoom mod
+
+### v1.0.6
+* Added player names on the minimap
+* changed tp colour to make it stand out more and added a text
+* Solved issue where the minimap would always fit to width even it if should fit to height (more work to be done to show non-displayed parts of the level)
