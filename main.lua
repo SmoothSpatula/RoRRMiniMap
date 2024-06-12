@@ -8,7 +8,8 @@ mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "tab
         toggle_map_key = 77,
         toggle_interactables = false,
         toggle_teleporter = false,
-        zoom_scale = 0.6,
+        toggle_player_names = true,
+        zoom_scale = 0.8,
         background_alpha = 0,
         foreground_alpha = 0.8,
         minimap_enabled = true
@@ -37,7 +38,7 @@ gui.add_to_menu_bar(function()
 end)
 
 gui.add_to_menu_bar(function()
-    local new_value, isChanged = ImGui.InputFloat("Zoom scale of the map", params['zoom_scale'], 0.001, 0.05, "%.4f", 0)
+    local new_value, isChanged = ImGui.InputFloat("Zoom scale of the map", params['zoom_scale'], 0.001, 0.05, "%.3f", 0)
     if isChanged and new_value >= -0.001 then -- due to floating point precision error, checking against 0 does not work
         params['zoom_scale'] = math.abs(new_value) -- same as above, so it display -0.0
         Toml.save_cfg(_ENV["!guid"], params)
@@ -84,6 +85,15 @@ gui.add_to_menu_bar(function()
     local new_value, clicked = ImGui.Checkbox("Show Teleporter", params['toggle_teleporter'])
     if clicked then
         params['toggle_teleporter'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
+        redraw = true
+    end
+end)
+
+gui.add_to_menu_bar(function()
+    local new_value, clicked = ImGui.Checkbox("Show Player Names", params['toggle_player_names'])
+    if clicked then
+        params['toggle_player_names'] = new_value
         Toml.save_cfg(_ENV["!guid"], params)
         redraw = true
     end
@@ -237,7 +247,8 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
         local tp_xscale = gm.sprite_get_width(tp.sprite_index) * xscale / 2
         local tp_yscale = gm.sprite_get_height(tp.sprite_index) * yscale * 2
 
-        gm.draw_rectangle_colour(x-tp_xscale, y-tp_yscale, x+tp_xscale-1, y-1, 255, 255, 255, 255, false)
+        gm.draw_rectangle_colour(x-tp_xscale, y-tp_yscale, x+tp_xscale-1, y-1, 8388736, 8388736, 8388736, 8388736, false)
+        gm.draw_text_colour(x-tp_xscale+5, y-tp_yscale-12, "TP", 16711935, 16711935, 16711935, 16711935, params['foreground_alpha'])
     end
 
     gm.surface_reset_target()
@@ -255,6 +266,10 @@ local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
         local player_xscale = gm.sprite_get_width(player.sprite_index) * xscale
         local player_yscale = gm.sprite_get_height(player.sprite_index) * yscale * 2
         local player_colour = multiplayer_colours[player.player_p_number]
+
+        if params['toggle_player_names'] and player.user_name then
+            gm.draw_text_colour(player_x-player_xscale+5, player_y-player_yscale-13, player.user_name, player_colour, player_colour, player_colour, player_colour, params['foreground_alpha'])
+        end
 
         gm.draw_rectangle_colour(player_x-player_xscale, player_y-player_yscale, player_x+player_xscale, player_y, player_colour, player_colour, player_colour, player_colour, false)
     end
@@ -278,8 +293,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
         local ratio = gm._mod_room_get_current_width() / gm._mod_room_get_current_height()
         local surf_width = params['zoom_scale'] * gm.camera_get_view_width(cam)
         local surf_height = surf_width / ratio
-
-        if gm._mod_room_get_current_width() < gm._mod_room_get_current_height() then
+        if ratio*gm.camera_get_view_height(cam) < gm.camera_get_view_width(cam) then
             surf_height = params['zoom_scale'] * gm.camera_get_view_height(cam)
             surf_width = surf_height * ratio
         end
@@ -313,16 +327,16 @@ gm.pre_code_execute(function(self, other, code, result, flags)
 end)
 
 -- Redraw the map for each new stage
-gm.post_script_hook(gm.constants.texture_flush_group, function(self, other, result, args)
+gm.post_script_hook(gm.constants.texture_flush_group, function()
     redraw = true
 end)
 
 -- Disable mod when run ends
-gm.pre_script_hook(gm.constants.run_destroy, function(self, other, result, args)
+gm.pre_script_hook(gm.constants.run_destroy, function()
     toggle_show_map = false
 end)
 
 -- Redraw the map when zoom scale changes, works with quickzoom mod
-gm.post_script_hook(gm.constants.prefs_set_zoom_scale, function(self, other, result, args)
+gm.post_script_hook(gm.constants.prefs_set_zoom_scale, function()
     redraw = true
 end)
