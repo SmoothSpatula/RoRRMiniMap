@@ -1,4 +1,4 @@
--- Minimap v1.0.5
+-- Minimap v1.0.6
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
