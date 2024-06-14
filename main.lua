@@ -351,3 +351,9 @@ gm.post_script_hook(gm.constants.interactable_set_active, function(self, other, 
         redraw = true
     end
 end)
+
+gm.post_script_hook(gm.constants.interactable_sync, function(self, other, result, args)
+    if params['toggle_interactables'] then
+        redraw = true
+    end
+end)
