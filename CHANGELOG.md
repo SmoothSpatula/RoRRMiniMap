@@ -25,3 +25,8 @@
 * Added player names on the minimap
 * changed tp colour to make it stand out more and added a text
 * Solved issue where the minimap would always fit to width even it if should fit to height (more work to be done to show non-displayed parts of the level)
+
+### v1.0.7
+* Solved overlapping/clipping issues
+* Interactables now disappear when they can no longer be activated
+* Small reformatting
