@@ -1,4 +1,4 @@
--- Minimap v1.0.6
+-- Minimap v1.0.7
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
@@ -110,7 +110,7 @@ end)
 local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     surf_map = gm.surface_create(gm.camera_get_view_width(cam), gm.camera_get_view_height(cam))
     gm.surface_set_target(surf_map)
-    gm.draw_clear_alpha(0, params['background_alpha'])
+    gm.draw_clear_alpha(0, 0)
     
     gm.draw_text(gm.camera_get_view_width(cam)/2, 10, "MINIMAP") 
 
@@ -230,12 +230,13 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local pInteractable = Helper.find_active_instance_all(gm.constants.pInteractable)
     if pInteractable and params['toggle_interactables'] then 
         for _, inst in ipairs(pInteractable) do
-            local x = xoffset + inst.x * xscale
-            local y = yoffset + inst.y * yscale
-            local interactable_xscale = gm.sprite_get_width(inst.sprite_index) * xscale / 4
-            local interactable_yscale = gm.sprite_get_height(inst.sprite_index) * yscale / 2
-
-            gm.draw_rectangle_colour(x-interactable_xscale, y-interactable_yscale, x+interactable_xscale, y, 65535, 65535, 65535, 65535, false)
+            if not (inst.active == 2.0 or inst.object_name == "oTeleporter") then
+                local x = xoffset + inst.x * xscale
+                local y = yoffset + inst.y * yscale
+                local interactable_xscale = gm.sprite_get_width(inst.sprite_index) * xscale / 4
+                local interactable_yscale = gm.sprite_get_height(inst.sprite_index) * yscale / 2
+                gm.draw_rectangle_colour(x-interactable_xscale, y-interactable_yscale, x+interactable_xscale, y, 65535, 65535, 65535, 65535, false)
+            end
         end
     end
 
@@ -248,7 +249,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
         local tp_yscale = gm.sprite_get_height(tp.sprite_index) * yscale * 2
 
         gm.draw_rectangle_colour(x-tp_xscale, y-tp_yscale, x+tp_xscale-1, y-1, 8388736, 8388736, 8388736, 8388736, false)
-        gm.draw_text_colour(x-tp_xscale+5, y-tp_yscale-12, "TP", 16711935, 16711935, 16711935, 16711935, params['foreground_alpha'])
+        gm.draw_text_colour(x-tp_xscale+5, y-tp_yscale-12, "TP", 16711935, 16711935, 16711935, 16711935, 1)
     end
 
     gm.surface_reset_target()
@@ -257,7 +258,7 @@ end
 local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
     surf_player = gm.surface_create(gm.camera_get_view_width(cam), gm.camera_get_view_height(cam))
     gm.surface_set_target(surf_player)
-    gm.draw_clear_alpha(0, 0)
+    gm.draw_clear_alpha(0, params['background_alpha']) --put this here because I can't draw it with the map
 
     -- Display the players
     for i, player in ipairs(players) do
@@ -268,7 +269,7 @@ local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
         local player_colour = multiplayer_colours[player.player_p_number]
 
         if params['toggle_player_names'] and player.user_name then
-            gm.draw_text_colour(player_x-player_xscale+5, player_y-player_yscale-13, player.user_name, player_colour, player_colour, player_colour, player_colour, params['foreground_alpha'])
+            gm.draw_text_colour(player_x-player_xscale+5, player_y-player_yscale-13, player.user_name, player_colour, player_colour, player_colour, player_colour, 1)
         end
 
         gm.draw_rectangle_colour(player_x-player_xscale, player_y-player_yscale, player_x+player_xscale, player_y, player_colour, player_colour, player_colour, player_colour, false)
@@ -281,6 +282,8 @@ end
 
 -- ========== Main ==========
 
+-- Draw the map surface and the player surface every frame
+-- Refresh the map surface when redraw is true
 gm.post_code_execute(function(self, other, code, result, flags)
     if not toggle_show_map or not params['minimap_enabled']then return end
 
@@ -304,8 +307,6 @@ gm.post_code_execute(function(self, other, code, result, flags)
         local xoffset = (gm.camera_get_view_width(cam) - surf_width) / 2
         local yoffset = (gm.camera_get_view_height(cam) - surf_height) / 2
 
-        gm.draw_set_alpha(params['foreground_alpha'])
-
         if gm.surface_exists(surf_map) == 0.0 or redraw then
             if gm.surface_exists(surf_map) ~= 0.0 then
                 gm.surface_free(surf_map)
@@ -314,9 +315,11 @@ gm.post_code_execute(function(self, other, code, result, flags)
             redraw = false
         end
 
-        gm.draw_surface(surf_map, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
-        draw_player(cam, players, xscale, yscale, xoffset, yoffset)
         gm.draw_set_alpha(1)
+        draw_player(cam, players, xscale, yscale, xoffset, yoffset)
+        gm.draw_set_alpha(params['foreground_alpha'])
+        gm.draw_surface(surf_map, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
+        
     end
 end)
 
@@ -339,4 +342,18 @@ end)
 -- Redraw the map when zoom scale changes, works with quickzoom mod
 gm.post_script_hook(gm.constants.prefs_set_zoom_scale, function()
     redraw = true
+end)
+
+
+
+gm.post_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
+    if params['toggle_interactables'] then
+        redraw = true
+    end
+end)
+
+gm.post_script_hook(gm.constants.interactable_sync, function(self, other, result, args)
+    if params['toggle_interactables'] then
+        redraw = true
+    end
 end)
