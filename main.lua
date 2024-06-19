@@ -1,4 +1,4 @@
--- Minimap v1.0.7
+-- Minimap v1.0.8
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
@@ -12,7 +12,9 @@ mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "tab
         zoom_scale = 0.8,
         background_alpha = 0,
         foreground_alpha = 0.8,
-        minimap_enabled = true
+        minimap_enabled = true,
+        x_offset = 0,
+        y_offset = 0
     }
 
     params = Toml.config_update(_ENV["!guid"], params)
@@ -38,11 +40,27 @@ gui.add_to_menu_bar(function()
 end)
 
 gui.add_to_menu_bar(function()
-    local new_value, isChanged = ImGui.InputFloat("Zoom scale of the map", params['zoom_scale'], 0.001, 0.05, "%.3f", 0)
+    local new_value, isChanged = ImGui.InputFloat("Zoom scale of the map", params['zoom_scale'], 0.02, 0.05, "%.2f", 0)
     if isChanged and new_value >= -0.001 then -- due to floating point precision error, checking against 0 does not work
         params['zoom_scale'] = math.abs(new_value) -- same as above, so it display -0.0
         Toml.save_cfg(_ENV["!guid"], params)
         redraw = true
+    end
+end)
+
+gui.add_to_menu_bar(function()
+    local new_value, clicked = ImGui.DragInt("X position from the  left part of the screen", params['x_offset'], 1, -2000, gm.display_get_gui_width())
+    if clicked then
+        params['x_offset'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
+    end
+end)
+
+gui.add_to_menu_bar(function()
+    local new_value, clicked = ImGui.DragInt("Y position from the  left part of the screen", params['y_offset'], 1, -2000, gm.display_get_gui_height())
+    if clicked then
+        params['y_offset'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
     end
 end)
 
@@ -112,7 +130,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     gm.surface_set_target(surf_map)
     gm.draw_clear_alpha(0, 0)
     
-    gm.draw_text(gm.camera_get_view_width(cam)/2, 10, "MINIMAP") 
+    --gm.draw_text(gm.camera_get_view_width(cam)/2, 10, "MINIMAP") 
 
     
     -- Display the floors and walls
@@ -276,7 +294,7 @@ local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
     end
     
     gm.surface_reset_target()
-    gm.draw_surface(surf_player, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
+    gm.draw_surface(surf_player, gm.camera_get_view_x(cam) + params['x_offset'], gm.camera_get_view_y(cam) + params['y_offset'])
     gm.surface_free(surf_player) --do this or run out of memory
 end
 
@@ -318,8 +336,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
         gm.draw_set_alpha(1)
         draw_player(cam, players, xscale, yscale, xoffset, yoffset)
         gm.draw_set_alpha(params['foreground_alpha'])
-        gm.draw_surface(surf_map, gm.camera_get_view_x(cam), gm.camera_get_view_y(cam))
-        
+        gm.draw_surface(surf_map, gm.camera_get_view_x(cam) + params['x_offset'], gm.camera_get_view_y(cam) + params['y_offset'])
     end
 end)
 
