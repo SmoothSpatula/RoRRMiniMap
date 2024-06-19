@@ -30,3 +30,7 @@
 * Solved overlapping/clipping issues
 * Interactables now disappear when they can no longer be activated
 * Small reformatting
+
+### v1.0.8
+* Added an x and y offset
+* Removed the MINIMAP text at the top
