@@ -248,7 +248,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local pInteractable = Helper.find_active_instance_all(gm.constants.pInteractable)
     if pInteractable and params['toggle_interactables'] then 
         for _, inst in ipairs(pInteractable) do
-            if not (inst.active == 2.0 or inst.object_name == "oTeleporter") then
+            if not (inst.active == 2.0 or inst.object_name == "oTeleporter") and not (inst.object_name == "oChest4" and inst.active == 3.0) then
                 local x = xoffset + inst.x * xscale
                 local y = yoffset + inst.y * yscale
                 local interactable_xscale = gm.sprite_get_width(inst.sprite_index) * xscale / 4
