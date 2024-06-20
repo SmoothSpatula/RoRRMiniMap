@@ -34,3 +34,9 @@
 ### v1.0.8
 * Added an x and y offset
 * Removed the MINIMAP text at the top
+
+### v1.0.9
+* Fixed oChest4, oShop1, oShop2 not disappearing on use
+* Reduced dynamic variable allocation
+* Added center map on player option
+* Added hide yourself option
