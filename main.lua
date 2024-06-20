@@ -1,4 +1,4 @@
--- Minimap v1.0.8
+-- Minimap v1.0.9
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
@@ -13,8 +13,11 @@ mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "tab
         background_alpha = 0,
         foreground_alpha = 0.8,
         minimap_enabled = true,
+        toggle_center_on_player = false,
+        toggle_hide_yourself = false,
         x_offset = 0,
         y_offset = 0
+        
     }
 
     params = Toml.config_update(_ENV["!guid"], params)
@@ -117,6 +120,24 @@ gui.add_to_menu_bar(function()
     end
 end)
 
+gui.add_to_menu_bar(function()
+    local new_value, clicked = ImGui.Checkbox("Center on player", params['toggle_center_on_player'])
+    if clicked then
+        params['toggle_center_on_player'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
+        redraw = true
+    end
+end)
+
+gui.add_to_menu_bar(function()
+local new_value, clicked = ImGui.Checkbox("Hide yourself", params['toggle_hide_yourself'])
+    if clicked then
+        params['toggle_hide_yourself'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
+        redraw = true
+    end
+end)
+
 gui.add_always_draw_imgui(function()
     if ImGui.IsKeyPressed(params['toggle_map_key']) and not chat_open then
         toggle_show_map = not toggle_show_map
@@ -132,15 +153,15 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     
     --gm.draw_text(gm.camera_get_view_width(cam)/2, 10, "MINIMAP") 
 
-    
+    local x, y, width, height = nil
     -- Display the floors and walls
     local oB = Helper.find_active_instance_all(gm.constants.oB)
     if oB then 
         for _, inst in ipairs(oB) do
-            local x = xoffset + inst.x * xscale
-            local y = yoffset + inst.y * yscale
-            local width = inst.width_box * xscale * 32
-            local height = inst.height_box * yscale * 32
+            x = xoffset + inst.x * xscale
+            y = yoffset + inst.y * yscale
+            width = inst.width_box * xscale * 32
+            height = inst.height_box * yscale * 32
 
             gm.draw_rectangle(x, y, x+width, y+height, false)
         end
@@ -149,10 +170,10 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local oBNoSpawn = Helper.find_active_instance_all(gm.constants.oBNoSpawn)
     if oBNoSpawn then 
         for _, inst in ipairs(oBNoSpawn) do
-            local x = xoffset + inst.x * xscale
-            local y = yoffset + inst.y * yscale
-            local width = inst.width_box * xscale * 32
-            local height = inst.height_box * yscale * 32
+            x = xoffset + inst.x * xscale
+            y = yoffset + inst.y * yscale
+            width = inst.width_box * xscale * 32
+            height = inst.height_box * yscale * 32
 
             gm.draw_rectangle(x, y, x+width, y+height, false)
         end
@@ -161,10 +182,10 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local oBFloorNoSpawn = Helper.find_active_instance_all(gm.constants.oBFloorNoSpawn)
     if oBFloorNoSpawn then 
         for _, inst in ipairs(oBFloorNoSpawn) do
-            local x = xoffset + inst.x * xscale
-            local y = yoffset + inst.y * yscale
-            local width = inst.width_box * xscale * 32
-            local height = inst.height_box * yscale * 32
+            x = xoffset + inst.x * xscale
+            y = yoffset + inst.y * yscale
+            width = inst.width_box * xscale * 32
+            height = inst.height_box * yscale * 32
 
             gm.draw_rectangle(x, y,x+width, y+height, false)
         end
@@ -173,10 +194,10 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local oBNoSpawn2 = Helper.find_active_instance_all(gm.constants.oBNoSpawn2)
     if oBNoSpawn2 then 
         for _, inst in ipairs(oBNoSpawn2) do
-            local x = xoffset + inst.x * xscale
-            local y = yoffset + inst.y * yscale
-            local width = inst.width_box * xscale * 32
-            local height = inst.height_box * yscale * 32
+            x = xoffset + inst.x * xscale
+            y = yoffset + inst.y * yscale
+            width = inst.width_box * xscale * 32
+            height = inst.height_box * yscale * 32
 
             gm.draw_rectangle(x, y, x+width, y+height, false)
         end
@@ -185,10 +206,10 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local oBNoSpawnHalf = Helper.find_active_instance_all(gm.constants.oBNoSpawnHalf)
     if oBNoSpawnHalf then 
         for _, inst in ipairs(oBNoSpawnHalf) do
-            local x = xoffset + inst.x * xscale
-            local y = yoffset + inst.y * yscale
-            local width = inst.width_box * xscale * 32
-            local height = inst.height_box * yscale * 32
+            x = xoffset + inst.x * xscale
+            y = yoffset + inst.y * yscale
+            width = inst.width_box * xscale * 32
+            height = inst.height_box * yscale * 32
 
             gm.draw_rectangle(x, y, x+width, y+height, false)
         end
@@ -197,10 +218,10 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local oBFloorNoSpawn2 = Helper.find_active_instance_all(gm.constants.oBFloorNoSpawn2)
     if oBFloorNoSpawn2 then 
         for _, inst in ipairs(oBFloorNoSpawn2) do
-            local x = xoffset + inst.x * xscale
-            local y = yoffset + inst.y * yscale
-            local width = inst.width_box * xscale * 32
-            local height = inst.height_box * yscale * 32
+            x = xoffset + inst.x * xscale
+            y = yoffset + inst.y * yscale
+            width = inst.width_box * xscale * 32
+            height = inst.height_box * yscale * 32
 
             gm.draw_rectangle(x, y, x+width, y+height, false)
         end
@@ -209,10 +230,10 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local oBInteractableSpawn = Helper.find_active_instance_all(gm.constants.oBInteractableSpawn)
     if oBInteractableSpawn then 
         for _, inst in ipairs(oBInteractableSpawn) do
-            local x = xoffset + inst.x * xscale
-            local y = yoffset + inst.y * yscale
-            local width = inst.width_box * xscale * 32
-            local height = inst.height_box * yscale * 32
+            x = xoffset + inst.x * xscale
+            y = yoffset + inst.y * yscale
+            width = inst.width_box * xscale * 32
+            height = inst.height_box * yscale * 32
 
             gm.draw_rectangle(x, y, x+width, y+height, false)
         end
@@ -222,10 +243,10 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local oRope = Helper.find_active_instance_all(gm.constants.oRope)
     if oRope then 
         for _, inst in ipairs(oRope) do
-            local x = xoffset + inst.x * xscale
-            local y = yoffset + inst.y * yscale
+            x = xoffset + inst.x * xscale
+            y = yoffset + inst.y * yscale
             local rope_xscale = gm.sprite_get_width(inst.sprite_index) * xscale / 2
-            local height = inst.height_box * yscale * 32
+            height = inst.height_box * yscale * 32
 
             gm.draw_rectangle_colour(x-rope_xscale, y, x+rope_xscale, y+height, 4235519, 4235519, 4235519, 4235519, false)
         end
@@ -235,8 +256,8 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local oGeyser = Helper.find_active_instance_all(gm.constants.oGeyser)
     if oGeyser then 
         for _, inst in ipairs(oGeyser) do
-            local x = xoffset + inst.x * xscale
-            local y = yoffset + inst.y * yscale
+            x = xoffset + inst.x * xscale
+            y = yoffset + inst.y * yscale
             local geyser_xscale = gm.sprite_get_width(inst.sprite_index) * xscale / 4
             local geyser_yscale = gm.sprite_get_height(inst.sprite_index) * yscale
 
@@ -248,9 +269,15 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local pInteractable = Helper.find_active_instance_all(gm.constants.pInteractable)
     if pInteractable and params['toggle_interactables'] then 
         for _, inst in ipairs(pInteractable) do
-            if not (inst.active == 2.0 or inst.object_name == "oTeleporter") and not (inst.object_name == "oChest4" and inst.active == 3.0) then
-                local x = xoffset + inst.x * xscale
-                local y = yoffset + inst.y * yscale
+
+
+
+
+            if not (inst.active == 2.0 or inst.object_name == "oTeleporter") 
+                and not (inst.object_name == "oChest4" and inst.active == 3.0) 
+                and not (inst.object_name == "oShop1" or inst.object_name == "oShop2" and (inst.spawn[1].active == 2.0 or inst.spawn[2].active == 2.0))  then
+                x = xoffset + inst.x * xscale
+                y = yoffset + inst.y * yscale
                 local interactable_xscale = gm.sprite_get_width(inst.sprite_index) * xscale / 4
                 local interactable_yscale = gm.sprite_get_height(inst.sprite_index) * yscale / 2
                 gm.draw_rectangle_colour(x-interactable_xscale, y-interactable_yscale, x+interactable_xscale, y, 65535, 65535, 65535, 65535, false)
@@ -261,8 +288,8 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     -- Display the teleporter
     local tp = Helper.get_teleporter()
     if tp and params['toggle_teleporter'] then 
-        local x = xoffset + tp.x * xscale
-        local y = yoffset + tp.y * yscale
+        x = xoffset + tp.x * xscale
+        y = yoffset + tp.y * yscale
         local tp_xscale = gm.sprite_get_width(tp.sprite_index) * xscale / 2
         local tp_yscale = gm.sprite_get_height(tp.sprite_index) * yscale * 2
 
@@ -273,6 +300,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     gm.surface_reset_target()
 end
 
+local player_x, player_y, player_xscale, player_yscale, player_colour, local_player, local_player_x, local_player_y = nil
 local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
     surf_player = gm.surface_create(gm.camera_get_view_width(cam), gm.camera_get_view_height(cam))
     gm.surface_set_target(surf_player)
@@ -280,21 +308,24 @@ local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
 
     -- Display the players
     for i, player in ipairs(players) do
-        local player_x = xoffset + player.x * xscale
-        local player_y = yoffset + player.y * yscale
-        local player_xscale = gm.sprite_get_width(player.sprite_index) * xscale
-        local player_yscale = gm.sprite_get_height(player.sprite_index) * yscale * 2
-        local player_colour = multiplayer_colours[player.player_p_number]
+        if not (params['toggle_hide_yourself'] and player.id == local_player.id) then
+            player_x = xoffset + player.x * xscale
+            player_y = yoffset + player.y * yscale
+            player_xscale = gm.sprite_get_width(player.sprite_index) * xscale
+            player_yscale = gm.sprite_get_height(player.sprite_index) * yscale * 2
+            player_colour = multiplayer_colours[player.player_p_number]
 
-        if params['toggle_player_names'] and player.user_name then
-            gm.draw_text_colour(player_x-player_xscale+5, player_y-player_yscale-13, player.user_name, player_colour, player_colour, player_colour, player_colour, 1)
+
+            if params['toggle_player_names'] and player.user_name then
+                gm.draw_text_colour(player_x-player_xscale+5, player_y-player_yscale-13, player.user_name, player_colour, player_colour, player_colour, player_colour, 1)
+            end
+
+            gm.draw_rectangle_colour(player_x-player_xscale, player_y-player_yscale, player_x+player_xscale, player_y, player_colour, player_colour, player_colour, player_colour, false)
         end
-
-        gm.draw_rectangle_colour(player_x-player_xscale, player_y-player_yscale, player_x+player_xscale, player_y, player_colour, player_colour, player_colour, player_colour, false)
     end
     
     gm.surface_reset_target()
-    gm.draw_surface(surf_player, gm.camera_get_view_x(cam) + params['x_offset'], gm.camera_get_view_y(cam) + params['y_offset'])
+    gm.draw_surface(surf_player, gm.camera_get_view_x(cam) + params['x_offset'] - local_player_x, gm.camera_get_view_y(cam) + params['y_offset'] - local_player_y)
     gm.surface_free(surf_player) --do this or run out of memory
 end
 
@@ -302,30 +333,31 @@ end
 
 -- Draw the map surface and the player surface every frame
 -- Refresh the map surface when redraw is true
+local cam, ratio, surf_width, surf_height, xscale, yscale, xoffset, yoffset, players = nil
 gm.post_code_execute(function(self, other, code, result, flags)
     if not toggle_show_map or not params['minimap_enabled']then return end
 
     if code.name:match("oInit_Draw_7") then
-        
-        local players = Helper.find_active_instance_all(gm.constants.oP)
+        players = Helper.find_active_instance_all(gm.constants.oP)
         if not players then return end
         
-        local cam = gm.view_get_camera(0)
-        local ratio = gm._mod_room_get_current_width() / gm._mod_room_get_current_height()
-        local surf_width = params['zoom_scale'] * gm.camera_get_view_width(cam)
-        local surf_height = surf_width / ratio
+        cam = gm.view_get_camera(0)
+        ratio = gm._mod_room_get_current_width() / gm._mod_room_get_current_height()
+        surf_width = params['zoom_scale'] * gm.camera_get_view_width(cam)
+        surf_height = surf_width / ratio
         if ratio*gm.camera_get_view_height(cam) < gm.camera_get_view_width(cam) then
             surf_height = params['zoom_scale'] * gm.camera_get_view_height(cam)
             surf_width = surf_height * ratio
         end
         
-        local xscale = surf_width / gm._mod_room_get_current_width()
-        local yscale = surf_height / gm._mod_room_get_current_height()
+        xscale = surf_width / gm._mod_room_get_current_width()
+        yscale = surf_height / gm._mod_room_get_current_height()
         
-        local xoffset = (gm.camera_get_view_width(cam) - surf_width) / 2
-        local yoffset = (gm.camera_get_view_height(cam) - surf_height) / 2
+        xoffset = (gm.camera_get_view_width(cam) - surf_width) / 2
+        yoffset = (gm.camera_get_view_height(cam) - surf_height) / 2
 
         if gm.surface_exists(surf_map) == 0.0 or redraw then
+            local_player = Helper.get_client_player()
             if gm.surface_exists(surf_map) ~= 0.0 then
                 gm.surface_free(surf_map)
             end
@@ -333,10 +365,19 @@ gm.post_code_execute(function(self, other, code, result, flags)
             redraw = false
         end
 
+        if params['toggle_center_on_player'] then
+            local_player_x = local_player.x * xscale - surf_width/2
+            local_player_y = local_player.y * yscale - surf_height/2
+        else 
+            local_player_x = 0
+            local_player_y = 0
+        end
+
+
         gm.draw_set_alpha(1)
         draw_player(cam, players, xscale, yscale, xoffset, yoffset)
         gm.draw_set_alpha(params['foreground_alpha'])
-        gm.draw_surface(surf_map, gm.camera_get_view_x(cam) + params['x_offset'], gm.camera_get_view_y(cam) + params['y_offset'])
+        gm.draw_surface(surf_map, gm.camera_get_view_x(cam) + params['x_offset'] - local_player_x, gm.camera_get_view_y(cam) + params['y_offset'] - local_player_y)
     end
 end)
 
