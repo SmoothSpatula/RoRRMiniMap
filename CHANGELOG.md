@@ -40,3 +40,6 @@
 * Reduced dynamic variable allocation
 * Added center map on player option
 * Added hide yourself option
+
+### v1.0.10
+* Fixed oShop1 not appearing on the map
