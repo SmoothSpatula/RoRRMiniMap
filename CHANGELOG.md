@@ -43,3 +43,7 @@
 
 ### v1.0.10
 * Fixed oShop1 not appearing on the map
+
+### v1.1.0
+* Fixed minimap appearing dark sometimes (hopefully)
+* Changed the way surfaces are used, hopefully it can fix the crash some people were getting
