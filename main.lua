@@ -1,4 +1,4 @@
--- Minimap v1.0.10
+-- Minimap v1.1.0
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
@@ -147,11 +147,11 @@ end)
 -- ========== Utils ==========
 
 local function draw_map(cam, xscale, yscale, xoffset, yoffset)
-    surf_map = gm.surface_create(gm.camera_get_view_width(cam), gm.camera_get_view_height(cam))
+    if surf_map == -1 then
+        surf_map = gm.surface_create(gm.camera_get_view_width(cam), gm.camera_get_view_height(cam))
+    end
     gm.surface_set_target(surf_map)
-    gm.draw_clear_alpha(0, 0)
-    
-    --gm.draw_text(gm.camera_get_view_width(cam)/2, 10, "MINIMAP") 
+    gm.draw_clear_alpha(16777215, 0)
 
     local x, y, width, height = nil
     -- Display the floors and walls
@@ -299,9 +299,11 @@ end
 
 local player_x, player_y, player_xscale, player_yscale, player_colour, local_player, local_player_x, local_player_y = nil
 local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
-    surf_player = gm.surface_create(gm.camera_get_view_width(cam), gm.camera_get_view_height(cam))
+    if surf_player == -1 then 
+        surf_player = gm.surface_create(gm.camera_get_view_width(cam), gm.camera_get_view_height(cam))
+    end
     gm.surface_set_target(surf_player)
-    gm.draw_clear_alpha(0, params['background_alpha']) --put this here because I can't draw it with the map
+    gm.draw_clear_alpha(16777215, params['background_alpha']) --put this here because I can't draw it with the map
 
     -- Display the players
     for i, player in ipairs(players) do
@@ -323,7 +325,6 @@ local function draw_player(cam, players, xscale, yscale, xoffset, yoffset)
     
     gm.surface_reset_target()
     gm.draw_surface(surf_player, gm.camera_get_view_x(cam) + params['x_offset'] - local_player_x, gm.camera_get_view_y(cam) + params['y_offset'] - local_player_y)
-    gm.surface_free(surf_player) --do this or run out of memory
 end
 
 -- ========== Main ==========
@@ -353,11 +354,8 @@ gm.post_code_execute(function(self, other, code, result, flags)
         xoffset = (gm.camera_get_view_width(cam) - surf_width) / 2
         yoffset = (gm.camera_get_view_height(cam) - surf_height) / 2
 
-        if gm.surface_exists(surf_map) == 0.0 or redraw then
+        if surf_map == -1 or redraw then
             local_player = Helper.get_client_player()
-            if gm.surface_exists(surf_map) ~= 0.0 then
-                gm.surface_free(surf_map)
-            end
             draw_map(cam, xscale, yscale, xoffset, yoffset) 
             redraw = false
         end
@@ -375,6 +373,7 @@ gm.post_code_execute(function(self, other, code, result, flags)
         draw_player(cam, players, xscale, yscale, xoffset, yoffset)
         gm.draw_set_alpha(params['foreground_alpha'])
         gm.draw_surface(surf_map, gm.camera_get_view_x(cam) + params['x_offset'] - local_player_x, gm.camera_get_view_y(cam) + params['y_offset'] - local_player_y)
+        gm.draw_set_alpha(1)
     end
 end)
 
@@ -398,8 +397,6 @@ end)
 gm.post_script_hook(gm.constants.prefs_set_zoom_scale, function()
     redraw = true
 end)
-
-
 
 gm.post_script_hook(gm.constants.interactable_set_active, function(self, other, result, args)
     if params['toggle_interactables'] then
