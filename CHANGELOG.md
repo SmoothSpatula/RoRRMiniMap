@@ -47,3 +47,6 @@
 ### v1.1.0
 * Fixed minimap appearing dark sometimes (hopefully)
 * Changed the way surfaces are used, hopefully it can fix the crash some people were getting
+
+### v1.1.1
+* Attempt to fix "attempt to index a number value" error that was crashing the game
