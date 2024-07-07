@@ -1,6 +1,6 @@
 {
 	"name": "MiniMap",
-	"version_number": "1.1.0",
+	"version_number": "1.1.1",
 	"website_url": "https://github.com/SmoothSpatula/SmoothSpatula-MiniMap",
 	"description": "Adds a minimap. Press M to toggle it.",
 	"dependencies": [
