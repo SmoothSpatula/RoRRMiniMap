@@ -1,25 +1,23 @@
--- Minimap v1.1.1
+-- Minimap v1.1.2
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
 mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.hfuncs then Helper = v end end end)
+params = {
+    toggle_map_key = 77,
+    toggle_interactables = false,
+    toggle_teleporter = false,
+    toggle_player_names = true,
+    zoom_scale = 0.8,
+    background_alpha = 0,
+    foreground_alpha = 0.6,
+    minimap_enabled = true,
+    toggle_center_on_player = false,
+    toggle_hide_yourself = false,
+    x_offset = 0,
+    y_offset = 0
+}
 mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.tomlfuncs then Toml = v end end 
-    params = {
-        toggle_map_key = 77,
-        toggle_interactables = false,
-        toggle_teleporter = false,
-        toggle_player_names = true,
-        zoom_scale = 0.8,
-        background_alpha = 0,
-        foreground_alpha = 0.8,
-        minimap_enabled = true,
-        toggle_center_on_player = false,
-        toggle_hide_yourself = false,
-        x_offset = 0,
-        y_offset = 0
-        
-    }
-
     params = Toml.config_update(_ENV["!guid"], params)
 end)
 
