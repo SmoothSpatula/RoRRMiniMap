@@ -50,3 +50,6 @@
 
 ### v1.1.1
 * Attempt to fix "attempt to index a number value" error that was crashing the game
+
+### v1.1.2
+* Trying to fix a small error message that made no sense
