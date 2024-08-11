@@ -53,3 +53,6 @@
 
 ### v1.1.2
 * Trying to fix a small error message that made no sense
+
+### v1.1.3
+* Added even more type checking to solve `attempt to index a number value (field 'integer index')` on line 274
