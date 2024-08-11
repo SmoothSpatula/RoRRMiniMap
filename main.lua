@@ -1,4 +1,4 @@
--- Minimap v1.1.2
+-- Minimap v1.1.3
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
@@ -267,11 +267,9 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     local pInteractable = Helper.find_active_instance_all(gm.constants.pInteractable)
     if pInteractable and params['toggle_interactables'] then 
         for _, inst in ipairs(pInteractable) do
-            
-
             if not (inst.active == 2.0 or inst.object_name == "oTeleporter")
                 and not (inst.object_name == "oChest4" and inst.active == 3.0)
-                and not ((inst.object_name == "oShop1" or inst.object_name == "oShop2") and gm.typeof(inst.spawn) == "array" and (inst.spawn[1].active == 2.0 or inst.spawn[2].active == 2.0))  then
+                and not ((inst.object_name == "oShop1" or inst.object_name == "oShop2") and gm.is_array(inst.spawn) and ((inst.spawn[1] and inst.spawn[1].active == 2.0) or (inst.spawn[2] and inst.spawn[2].active == 2.0)))  then
                 x = xoffset + inst.x * xscale
                 y = yoffset + inst.y * yscale
                 local interactable_xscale = gm.sprite_get_width(inst.sprite_index) * xscale / 4
