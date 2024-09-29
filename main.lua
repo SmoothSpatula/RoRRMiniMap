@@ -2,9 +2,8 @@
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
-mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.hfuncs then Helper = v end end end)
-
 mods.on_all_mods_loaded(function() for _, m in pairs(mods) do if type(m) == "table" and m.RoRR_Modding_Toolkit then for _, c in ipairs(m.Classes) do if m[c] then _G[c] = m[c] end end end end end)
+
 params = {
     toggle_map_key = 77,
     toggle_interactables = false,
@@ -155,7 +154,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
 
     local x, y, width, height = nil
     -- Display the floors and walls
-    local oB = Helper.find_active_instance_all(gm.constants.oB)
+    local oB = Instance.find_all(gm.constants.oB)
     if oB then 
         for _, inst in ipairs(oB) do
             x = xoffset + inst.x * xscale
@@ -167,7 +166,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
         end
     end
     
-    local oBNoSpawn = Helper.find_active_instance_all(gm.constants.oBNoSpawn)
+    local oBNoSpawn = Instance.find_all(gm.constants.oBNoSpawn)
     if oBNoSpawn then 
         for _, inst in ipairs(oBNoSpawn) do
             x = xoffset + inst.x * xscale
@@ -179,7 +178,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
         end
     end
 
-    local oBFloorNoSpawn = Helper.find_active_instance_all(gm.constants.oBFloorNoSpawn)
+    local oBFloorNoSpawn = Instance.find_all(gm.constants.oBFloorNoSpawn)
     if oBFloorNoSpawn then 
         for _, inst in ipairs(oBFloorNoSpawn) do
             x = xoffset + inst.x * xscale
@@ -191,7 +190,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
         end
     end
     
-    local oBNoSpawn2 = Helper.find_active_instance_all(gm.constants.oBNoSpawn2)
+    local oBNoSpawn2 = Instance.find_all(gm.constants.oBNoSpawn2)
     if oBNoSpawn2 then 
         for _, inst in ipairs(oBNoSpawn2) do
             x = xoffset + inst.x * xscale
@@ -203,7 +202,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
         end
     end
     
-    local oBNoSpawnHalf = Helper.find_active_instance_all(gm.constants.oBNoSpawnHalf)
+    local oBNoSpawnHalf = Instance.find_all(gm.constants.oBNoSpawnHalf)
     if oBNoSpawnHalf then 
         for _, inst in ipairs(oBNoSpawnHalf) do
             x = xoffset + inst.x * xscale
@@ -215,7 +214,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
         end
     end
     
-    local oBFloorNoSpawn2 = Helper.find_active_instance_all(gm.constants.oBFloorNoSpawn2)
+    local oBFloorNoSpawn2 = Instance.find_all(gm.constants.oBFloorNoSpawn2)
     if oBFloorNoSpawn2 then 
         for _, inst in ipairs(oBFloorNoSpawn2) do
             x = xoffset + inst.x * xscale
@@ -227,7 +226,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
         end
     end
     
-    local oBInteractableSpawn = Helper.find_active_instance_all(gm.constants.oBInteractableSpawn)
+    local oBInteractableSpawn = Instance.find_all(gm.constants.oBInteractableSpawn)
     if oBInteractableSpawn then 
         for _, inst in ipairs(oBInteractableSpawn) do
             x = xoffset + inst.x * xscale
@@ -240,7 +239,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     end
     
     -- Display the ropes
-    local oRope = Helper.find_active_instance_all(gm.constants.oRope)
+    local oRope = Instance.find_all(gm.constants.oRope)
     if oRope then 
         for _, inst in ipairs(oRope) do
             x = xoffset + inst.x * xscale
@@ -253,7 +252,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     end
     
     -- Display the geysers
-    local oGeyser = Helper.find_active_instance_all(gm.constants.oGeyser)
+    local oGeyser = Instance.find_all(gm.constants.oGeyser)
     if oGeyser then 
         for _, inst in ipairs(oGeyser) do
             x = xoffset + inst.x * xscale
@@ -266,7 +265,7 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
     end
     
     -- Display all interactables
-    local pInteractable = Helper.find_active_instance_all(gm.constants.pInteractable)
+    local pInteractable = Instance.find_all(gm.constants.pInteractable)
     if pInteractable and params['toggle_interactables'] then 
         for _, inst in ipairs(pInteractable) do
             if not (inst.active == 2.0 or inst.object_name == "oTeleporter")
@@ -281,8 +280,8 @@ local function draw_map(cam, xscale, yscale, xoffset, yoffset)
         end
     end
     -- Display the teleporter
-    local tp = Helper.get_teleporter()
-    if tp and params['toggle_teleporter'] then 
+    local tp = Instance.find(Instance.teleporters)
+    if tp:exists() and params['toggle_teleporter'] then 
         x = xoffset + tp.x * xscale
         y = yoffset + tp.y * yscale
         local tp_xscale = gm.sprite_get_width(tp.sprite_index) * xscale / 2
@@ -333,7 +332,7 @@ local cam, ratio, surf_width, surf_height, xscale, yscale, xoffset, yoffset, pla
 function __initialize()
     Callback.add("postHUDDraw", "SmoothSpatula-Minimap-Draw", function()
         if not toggle_show_map or not params['minimap_enabled']then return end
-        players = Helper.find_active_instance_all(gm.constants.oP)
+        players = Instance.find_all(gm.constants.oP)
         if not players then return end
         
         cam = gm.view_get_camera(0)
@@ -352,7 +351,8 @@ function __initialize()
         yoffset = (gm.camera_get_view_height(cam) - surf_height) / 2
 
         if surf_map == -1 or redraw then
-            local_player = Helper.get_client_player()
+            local_player = Player.get_client()
+            local_player = local_player.value
             draw_map(cam, xscale, yscale, xoffset, yoffset) 
             redraw = false
         end
