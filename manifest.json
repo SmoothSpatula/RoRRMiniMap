@@ -6,7 +6,6 @@
 	"dependencies": [
 		"ReturnOfModding-ReturnOfModding-1.0.32",
 		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.1.5",
-		"Klehrik-HelperFunctions-1.0.5",
 		"SmoothSpatula-TomlHelper-1.0.1"
 	]
 }
