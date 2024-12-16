@@ -1,8 +1,8 @@
--- Minimap v1.1.4
+-- Minimap v1.1.5
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
-mods.on_all_mods_loaded(function() for _, m in pairs(mods) do if type(m) == "table" and m.RoRR_Modding_Toolkit then for _, c in ipairs(m.Classes) do if m[c] then _G[c] = m[c] end end end end end)
+mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
 
 params = {
     toggle_map_key = 77,
@@ -329,7 +329,7 @@ end
 -- Draw the map surface and the player surface every frame
 -- Refresh the map surface when redraw is true
 local cam, ratio, surf_width, surf_height, xscale, yscale, xoffset, yoffset, players = nil
-function __initialize()
+function init()
     Callback.add("postHUDDraw", "SmoothSpatula-Minimap-Draw", function()
         if not toggle_show_map or not params['minimap_enabled']then return end
         players = Instance.find_all(gm.constants.oP)
@@ -373,6 +373,8 @@ function __initialize()
         gm.draw_set_alpha(1)
     end)
 end
+
+Initialize(init)
 
 gm.pre_code_execute(function(self, other, code, result, flags)
     if code.name:match("oInit") then
