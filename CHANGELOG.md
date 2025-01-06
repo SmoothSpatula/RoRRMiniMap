@@ -1,3 +1,9 @@
+### v1.1.6
+* Changed to new pre_code_execute released in RoM 1.0.43
+
+### v1.1.5
+* Multiplayer Compatibility
+
 ### v1.1.4
 * Changed the post_code_execute draw to a callback to reduce lag
 * Now uses RMT instead of Helper
