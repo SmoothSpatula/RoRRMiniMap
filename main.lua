@@ -1,4 +1,4 @@
--- Minimap v1.1.5
+-- Minimap v1.1.6
 -- SmoothSpatula
 
 log.info("Successfully loaded ".._ENV["!guid"]..".")
@@ -334,7 +334,7 @@ function init()
         if not toggle_show_map or not params['minimap_enabled']then return end
         players = Instance.find_all(gm.constants.oP)
         if not players then return end
-        
+
         cam = gm.view_get_camera(0)
         ratio = gm._mod_room_get_current_width() / gm._mod_room_get_current_height()
         surf_width = params['zoom_scale'] * gm.camera_get_view_width(cam)
@@ -365,7 +365,6 @@ function init()
             local_player_y = 0
         end
 
-
         gm.draw_set_alpha(1)
         draw_player(cam, players, xscale, yscale, xoffset, yoffset)
         gm.draw_set_alpha(params['foreground_alpha'])
@@ -376,10 +375,8 @@ end
 
 Initialize(init)
 
-gm.pre_code_execute(function(self, other, code, result, flags)
-    if code.name:match("oInit") then
+gm.pre_code_execute("gml_Object_oInit_Draw_73", function(self, other)
         chat_open = self.chat_talking
-    end
 end)
 
 -- Redraw the map for each new stage
